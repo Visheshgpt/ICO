@@ -1,617 +1,228 @@
-/**
- *Submitted for verification at BscScan.com on 2022-02-09
-*/
-
-/**
- *Submitted for verification at BscScan.com on 2021-08-17
-*/
-
-/**
- *Submitted for verification at BscScan.com on 2021-06-06
-*/
-
-/**
- *Submitted for verification at BscScan.com on 2021-05-09
-*/
-
-// File: @openzeppelin/contracts/token/ERC20/IERC20.sol
-
 // SPDX-License-Identifier: MIT
+pragma solidity 0.8.0;
 
-pragma solidity >=0.6.0 <0.8.0;
-pragma experimental ABIEncoderV2;
-
-abstract contract Context {
-    function _msgSender() internal view virtual returns (address) {
-        return msg.sender;
-    }
-
-    function _msgData() internal view virtual returns (bytes calldata) {
-        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
-        return msg.data;
-    }
-}
-
-/**
- * @dev Interface of the ERC20 standard as defined in the EIP.
- */
-interface IERC20 {
-    /**
-     * @dev Returns the amount of tokens in existence.
-     */
-    function totalSupply() external view returns (uint);
-
-    /**
-     * @dev Returns the amount of tokens owned by `account`.
-     */
-    function balanceOf(address account) external view returns (uint);
-
-    /**
-     * @dev Moves `amount` tokens from the caller's account to `recipient`.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transfer(address recipient, uint amount) external returns (bool);
-
-    /**
-     * @dev Returns the remaining number of tokens that `spender` will be
-     * allowed to spend on behalf of `owner` through {transferFrom}. This is
-     * zero by default.
-     *
-     * This value changes when {approve} or {transferFrom} are called.
-     */
-    function allowance(address owner, address spender) external view returns (uint);
-
-    /**
-     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * IMPORTANT: Beware that changing an allowance with this method brings the risk
-     * that someone may use both the old and the new allowance by unfortunate
-     * transaction ordering. One possible solution to mitigate this race
-     * condition is to first reduce the spender's allowance to 0 and set the
-     * desired value afterwards:
-     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-     *
-     * Emits an {Approval} event.
-     */
-    function approve(address spender, uint amount) external returns (bool);
-
-    /**
-     * @dev Moves `amount` tokens from `sender` to `recipient` using the
-     * allowance mechanism. `amount` is then deducted from the caller's
-     * allowance.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transferFrom(address sender, address recipient, uint amount) external returns (bool);
-
-    /**
-     * @dev Emitted when `value` tokens are moved from one account (`from`) to
-     * another (`to`).
-     *
-     * Note that `value` may be zero.
-     */
-    event Transfer(address indexed from, address indexed to, uint value);
-
-    /**
-     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
-     * a call to {approve}. `value` is the new allowance.
-     */
-    event Approval(address indexed owner, address indexed spender, uint value);
-}
-
-/**
- * @dev Interface of the ERC165 standard, as defined in the
- * https://eips.ethereum.org/EIPS/eip-165[EIP].
- *
- * Implementers can declare support of contract interfaces, which can then be
- * queried by others ({ERC165Checker}).
- *
- * For an implementation, see {ERC165}.
- */
-interface IERC165 {
-    /**
-     * @dev Returns true if this contract implements the interface defined by
-     * `interfaceId`. See the corresponding
-     * https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section]
-     * to learn more about how these ids are created.
-     *
-     * This function call must use less than 30 000 gas.
-     */
-    function supportsInterface(bytes4 interfaceId) external view returns (bool);
-}
-
-/**
- * @dev Required interface of an ERC721 compliant contract.
- */
-interface IERC721 is IERC165 {
-    /**
-     * @dev Emitted when `tokenId` token is transferred from `from` to `to`.
-     */
-    event Transfer(address indexed from, address indexed to, uint indexed tokenId);
-
-    /**
-     * @dev Emitted when `owner` enables `approved` to manage the `tokenId` token.
-     */
-    event Approval(address indexed owner, address indexed approved, uint indexed tokenId);
-
-    /**
-     * @dev Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.
-     */
-    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
-
-    /**
-     * @dev Returns the number of tokens in ``owner``'s account.
-     */
-    function balanceOf(address owner) external view returns (uint balance);
-
-    /**
-     * @dev Returns the owner of the `tokenId` token.
-     *
-     * Requirements:
-     *
-     * - `tokenId` must exist.
-     */
-    function ownerOf(uint tokenId) external view returns (address owner);
-
-    /**
-     * @dev Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients
-     * are aware of the ERC721 protocol to prevent tokens from being forever locked.
-     *
-     * Requirements:
-     *
-     * - `from` cannot be the zero address.
-     * - `to` cannot be the zero address.
-     * - `tokenId` token must exist and be owned by `from`.
-     * - If the caller is not `from`, it must be have been allowed to move this token by either {approve} or {setApprovalForAll}.
-     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
-     *
-     * Emits a {Transfer} event.
-     */
-    function safeTransferFrom(address from, address to, uint tokenId) external;
-
-    /**
-     * @dev Transfers `tokenId` token from `from` to `to`.
-     *
-     * WARNING: Usage of this method is discouraged, use {safeTransferFrom} whenever possible.
-     *
-     * Requirements:
-     *
-     * - `from` cannot be the zero address.
-     * - `to` cannot be the zero address.
-     * - `tokenId` token must be owned by `from`.
-     * - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transferFrom(address from, address to, uint tokenId) external;
-
-    /**
-     * @dev Gives permission to `to` to transfer `tokenId` token to another account.
-     * The approval is cleared when the token is transferred.
-     *
-     * Only a single account can be approved at a time, so approving the zero address clears previous approvals.
-     *
-     * Requirements:
-     *
-     * - The caller must own the token or be an approved operator.
-     * - `tokenId` must exist.
-     *
-     * Emits an {Approval} event.
-     */
-    function approve(address to, uint tokenId) external;
-
-    /**
-     * @dev Returns the account approved for `tokenId` token.
-     *
-     * Requirements:
-     *
-     * - `tokenId` must exist.
-     */
-    function getApproved(uint tokenId) external view returns (address operator);
-
-    /**
-     * @dev Approve or remove `operator` as an operator for the caller.
-     * Operators can call {transferFrom} or {safeTransferFrom} for any token owned by the caller.
-     *
-     * Requirements:
-     *
-     * - The `operator` cannot be the caller.
-     *
-     * Emits an {ApprovalForAll} event.
-     */
-    function setApprovalForAll(address operator, bool _approved) external;
-
-    /**
-     * @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
-     *
-     * See {setApprovalForAll}
-     */
-    function isApprovedForAll(address owner, address operator) external view returns (bool);
-
-    /**
-      * @dev Safely transfers `tokenId` token from `from` to `to`.
-      *
-      * Requirements:
-      *
-      * - `from` cannot be the zero address.
-      * - `to` cannot be the zero address.
-      * - `tokenId` token must exist and be owned by `from`.
-      * - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
-      * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
-      *
-      * Emits a {Transfer} event.
-      */
-    function safeTransferFrom(address from, address to, uint tokenId, bytes calldata data) external;
-}
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 
-pragma solidity >=0.6.0 <0.8.0;
-
-/**
- * @dev Wrappers over Solidity's arithmetic operations with added overflow
- * checks.
- *
- * Arithmetic operations in Solidity wrap on overflow. This can easily result
- * in bugs, because programmers usually assume that an overflow raises an
- * error, which is the standard behavior in high level programming languages.
- * `SafeMath` restores this intuition by reverting the transaction when an
- * operation overflows.
- *
- * Using this library instead of the unchecked operations eliminates an entire
- * class of bugs, so it's recommended to use it always.
- */
-library SafeMath {
-    /**
-     * @dev Returns the addition of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `+` operator.
-     *
-     * Requirements:
-     *
-     * - Addition cannot overflow.
-     */
-    function add(uint256 a, uint256 b) internal pure returns (uint256) {
-        uint256 c = a + b;
-        require(c >= a, "SafeMath: addition overflow");
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting on
-     * overflow (when the result is negative).
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     *
-     * - Subtraction cannot overflow.
-     */
-    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-        return sub(a, b, "SafeMath: subtraction overflow");
-    }
-
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
-     * overflow (when the result is negative).
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     *
-     * - Subtraction cannot overflow.
-     */
-    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b <= a, errorMessage);
-        uint256 c = a - b;
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the multiplication of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `*` operator.
-     *
-     * Requirements:
-     *
-     * - Multiplication cannot overflow.
-     */
-    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
-        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
-        // benefit is lost if 'b' is also tested.
-        // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
-        if (a == 0) {
-            return 0;
-        }
-
-        uint256 c = a * b;
-        require(c / a == b, "SafeMath: multiplication overflow");
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the integer division of two unsigned integers. Reverts on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
-    function div(uint256 a, uint256 b) internal pure returns (uint256) {
-        return div(a, b, "SafeMath: division by zero");
-    }
-
-    /**
-     * @dev Returns the integer division of two unsigned integers. Reverts with custom message on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
-    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b > 0, errorMessage);
-        uint256 c = a / b;
-        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * Reverts when dividing by zero.
-     *
-     * Counterpart to Solidity's `%` operator. This function uses a `revert`
-     * opcode (which leaves remaining gas untouched) while Solidity uses an
-     * invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
-    function mod(uint256 a, uint256 b) internal pure returns (uint256) {
-        return mod(a, b, "SafeMath: modulo by zero");
-    }
-
-    /**
-     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * Reverts with custom message when dividing by zero.
-     *
-     * Counterpart to Solidity's `%` operator. This function uses a `revert`
-     * opcode (which leaves remaining gas untouched) while Solidity uses an
-     * invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
-    function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b != 0, errorMessage);
-        return a % b;
-    }
-}
-
-
-/**
- * @title ERC721 token receiver interface
- * @dev Interface for any contract that wants to support safeTransfers
- * from ERC721 asset contracts.
- */
-interface IERC721Receiver {
-    /**
-     * @dev Whenever an {IERC721} `tokenId` token is transferred to this contract via {IERC721-safeTransferFrom}
-     * by `operator` from `from`, this function is called.
-     *
-     * It must return its Solidity selector to confirm the token transfer.
-     * If any other value is returned or the interface is not implemented by the recipient, the transfer will be reverted.
-     *
-     * The selector can be obtained in Solidity with `IERC721.onERC721Received.selector`.
-     */
-    function onERC721Received(address operator, address from, uint tokenId, bytes calldata data) external returns (bytes4);
-}
-
-abstract contract Ownable is Context {
-    address private _owner;
-
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-
-    /**
-     * @dev Initializes the contract setting the deployer as the initial owner.
-     */
-    constructor () public {
-        address msgSender = _msgSender();
-        _owner = msgSender;
-        emit OwnershipTransferred(address(0), msgSender);
-    }
-
-    /**
-     * @dev Returns the address of the current owner.
-     */
-    function owner() public view virtual returns (address) {
-        return _owner;
-    }
-
-    /**
-     * @dev Throws if called by any account other than the owner.
-     */
-    modifier onlyOwner() {
-        require(owner() == _msgSender(), "Ownable: caller is not the owner");
-        _;
-    }
-
-    /**
-     * @dev Leaves the contract without owner. It will not be possible to call
-     * `onlyOwner` functions anymore. Can only be called by the current owner.
-     *
-     * NOTE: Renouncing ownership will leave the contract without an owner,
-     * thereby removing any functionality that is only available to the owner.
-     */
-    function renounceOwnership() public virtual onlyOwner {
-        emit OwnershipTransferred(_owner, address(0));
-        _owner = address(0);
-    }
-
-    /**
-     * @dev Transfers ownership of the contract to a new account (`newOwner`).
-     * Can only be called by the current owner.
-     */
-    function transferOwnership(address newOwner) public virtual onlyOwner {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
-        emit OwnershipTransferred(_owner, newOwner);
-        _owner = newOwner;
-    }
-}
-
-contract NFTLottery is  IERC721Receiver, Ownable {
-    
+contract ICO is Ownable, ReentrancyGuard {
     using SafeMath for uint256;
-    
-    IERC20 public staketoken;
-    IERC721 public nftredeem;
+    using SafeERC20 for ERC20;
+ 
+    uint256 public tokenPrice;
+    ERC20 public rewardToken;
+    uint256 public decimals;
+    uint256 public startTimestamp;
+    uint256 public finishTimestamp;
+    bool public Claimenabled;
+    uint256 public minInvestment;
+    uint256 public maxInvestment;
+    uint256 public maxDistributedTokenAmount;
+    uint256 public minDistributedTokenAmount;
+    uint256 public tokensForDistribution;
+    uint256 public distributedTokens;
+    uint256 public totalBNBraise;
 
-    uint256 public stakingamount; 
-    uint256 public nftId;
+    struct UserInfo {
+        uint debt;
+        uint totalInvestedETH;
+    }
 
-    bool public staking;
-    bool public winnerAnnounced;
-    bool public initialized;
-
-    address[] public stakers;
-
-    uint256 salt = 100;
-           
-    // mappings
-    mapping (address => uint256) public userStaked; 
+    mapping(address => UserInfo) public userInfo;
     mapping (address => bool) public existingUser;
 
-    event stake(address from, uint256 amount);
-    event winner(address _winner, uint256 nftId);
-    
-    
-    function stakeTokens() external {
-        
-        require (staking == true, "Staking not live");
-        require(existingUser[msg.sender] == false, "Already Staked");
-        existingUser[msg.sender] = true;
-        stakers.push(msg.sender);
-        staketoken.transferFrom(msg.sender, address(this), stakingamount); 
-    
-        emit stake(msg.sender, stakingamount);    
-    }
+    address[] public users;
 
+    address[] public whitelistedUsers;
+    mapping (address => bool) private isWhitelistedUser;
+    mapping (address => bool) public claimBlocked;
+ 
+    uint public round;
 
-    function PickWinner() external onlyOwner {
-
-       require (staking == false, "Staking live");
-       require (winnerAnnounced == false, "Winner Already Announced");
-       uint256 pickWinner = random(random2(msg.sender),stakers.length) + 1;
-       
-       winnerAnnounced = true;
-        
-       nftredeem.safeTransferFrom(address(this), stakers[pickWinner], nftId);    
-
-       emit winner(stakers[pickWinner], nftId);
-    }
-
-    // function CheckWinner(uint256 _length) external view returns(uint256) {
-    //     return random(random2(msg.sender),_length) + 1;
-    // }
-
+    event TokensDebt(
+        address indexed holder,
+        uint256 ethAmount,
+        uint256 tokenAmount
+    );
     
-    function random(uint256 rn, uint256 _totalstakers) private view returns (uint256) {
-       return uint256(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty,rn))) % _totalstakers);
-    }
-    
-    
-    function utilsrandom(uint256 from, uint256 to, uint256 salty) private view returns (uint256) {
-        uint256 seed = uint256(
-            keccak256(
-                abi.encodePacked(
-                    block.timestamp + block.difficulty +
-                    ((uint256(keccak256(abi.encodePacked(block.coinbase)))) / (now)) +
-                    block.gaslimit +
-                    ((uint256(keccak256(abi.encodePacked(msg.sender)))) / (now)) +
-                    block.number +
-                    salty
-                )
-            )
+    event TokensWithdrawn(address indexed holder, uint256 amount);
+
+    constructor(
+        uint256 _tokenPrice,
+        ERC20 _rewardToken,
+        uint256 _startTimestamp,
+        uint256 _finishTimestamp,
+        uint256 _minEthPayment,
+        uint256 _maxEthPayment,
+        uint256 _hardCap,
+        uint256 _SoftCap
+
+    )  {
+        tokenPrice = _tokenPrice;
+        rewardToken = _rewardToken;
+        decimals = rewardToken.decimals();
+
+        require(
+            _startTimestamp < _finishTimestamp,
+            "Start timestamp must be less than finish timestamp"
         );
-        return seed.mod(to - from) + from;
-    }
-    
-    
-    function random2(address _a) private view returns (uint256) {
-        uint256 utilsrandomnumber = utilsrandom(1,staketoken.balanceOf(address(this)),salt);
-        address y;
-        assembly {
-            y:= mload(0x40)
-        }      
-        return uint256(uint256(keccak256(abi.encodePacked(utilsrandomnumber,y,block.timestamp, block.difficulty,_a))) % staketoken.balanceOf(address(this)));
-    }
-
-    function startStaking() external onlyOwner {
-        staking = true;
-    }
-    
-    function stopStaking() external onlyOwner {
-        staking = false;
+        require(
+            _finishTimestamp > block.timestamp,
+            "Finish timestamp must be more than current block"
+        );
+        startTimestamp = _startTimestamp;
+        finishTimestamp = _finishTimestamp;
+        minInvestment = _minEthPayment;
+        maxInvestment = _maxEthPayment;
+        maxDistributedTokenAmount = _hardCap;
+        minDistributedTokenAmount = _SoftCap;
     }
 
-    // function setstaketoken(IERC20 _add) external onlyOwner {
-    //     staketoken = _add; 
-    // }
+//2857000000000
+//0x2F39D4AdEf5Cc232a735C9a86e7A613C337f18A0
+//1642918878
+//1642919778
+//100000000000000000
+//500000000000000000
+//875000000000000000000000
+//350000000000000000000000
+
+
+    function Invest() payable external {
     
-    function setredeemNft(IERC721 _add) external onlyOwner {
-        nftredeem = _add;
+        require(block.timestamp >= startTimestamp, "Not started");
+        require(block.timestamp < finishTimestamp, "Ended");
+
+        if (round == 0) {
+            require (isWhitelistedUser[msg.sender] == true, "Not a whitelised User");
+        }
+ 
+        if (!existingUser[msg.sender]) {
+            require (msg.value >= minInvestment, "Please Stake min amount");
+            existingUser[msg.sender] = true;
+            users.push(msg.sender);
+        }
+         
+        uint256 tokenAmount = getTokenAmount(msg.value);
+        require(tokensForDistribution.add(tokenAmount) <= maxDistributedTokenAmount, "PreSale is Sold Out");
+
+        UserInfo storage user = userInfo[msg.sender];
+        require(user.totalInvestedETH.add(msg.value) <= maxInvestment, "More then max amount");
+
+        tokensForDistribution = tokensForDistribution.add(tokenAmount);
+        user.totalInvestedETH = user.totalInvestedETH.add(msg.value);
+        totalBNBraise = totalBNBraise.add(msg.value); 
+        user.debt = user.debt.add(tokenAmount);
+
+        emit TokensDebt(msg.sender, msg.value, tokenAmount);
+    }                     // 2857000000000
+                          // 
+
+    function getTokenAmount(uint256 ethAmount)
+        internal                   
+        view
+        returns (uint256)     
+    {
+        return ethAmount.mul(10**decimals).div(tokenPrice);
     }
 
-    function setNftId(uint256 _id) external onlyOwner {
-        nftId = _id;
+    function startWhitelistingRound() public onlyOwner {
+        round = 0;
+    }
+
+    function starPublicRound() public onlyOwner {
+        round = 1;
+    }
+
+    function blockclaim(address _user, bool _status) public onlyOwner {
+        claimBlocked[_user] = _status;
+    }
+
+
+    /// @dev Allows to claim tokens for the specific user.
+    /// @param _user Token receiver.
+    function claimFor(address _user) external {
+        proccessClaim(_user);
+    }
+
+    /// @dev Allows to claim tokens for themselves.
+    function claim() external {
+        proccessClaim(msg.sender);
+    }
+
+    /// @dev Proccess the claim.
+    /// @param _receiver Token receiver.
+    function proccessClaim(
+        address _receiver
+    ) internal nonReentrant {
+        require(claimBlocked[_receiver]==false, "Bad address"); 
+        require(Claimenabled == true, "Distribution not started");
+        UserInfo storage user = userInfo[_receiver];
+        uint256 _amount = user.debt;
+        uint eth = user.totalInvestedETH;
+        
+        if (minDistributedTokenAmount <= tokensForDistribution) {
+            require (_amount > 0, "No tokens to claim");
+                user.debt = 0;            
+                distributedTokens = distributedTokens.add(_amount);
+                rewardToken.safeTransfer(_receiver, _amount);
+                emit TokensWithdrawn(_receiver,_amount);
+        } 
+        else {
+            require (eth > 0, "No BNB to claim");
+             user.totalInvestedETH = 0; 
+             user.debt = 0;
+             (bool success, ) = msg.sender.call{value: eth}("");
+             require(success, "Transfer failed.");
+        }        
+    }
+
+    function StartClaim() external onlyOwner {
+        Claimenabled = true;
+    }
+
+    function StopClaim() external onlyOwner {
+        Claimenabled = false;
+    } 
+
+    function checkWhitelisted(address _user) public view returns (bool) {
+        return isWhitelistedUser[_user];
     }
  
-    function withdrawAdmin(address _nftaddress, uint256 _id, address admin) external onlyOwner {
-        IERC721 nft;
-        nft = IERC721(_nftaddress);  
-        nft.safeTransferFrom(address(this), admin, _id); 
-    }
-    
-    function withdrawtokens(address tokenaddress, address _admin, uint256 _amount) external onlyOwner {
-        IERC20 stk;
-        stk = IERC20(tokenaddress);
-        stk.transfer(_admin , _amount);  
-    }
-    
-    function initialize(IERC20 _stakingtoken, IERC721 _nftredeemaddress, uint256 _stakingamount) external onlyOwner {
-       
-       require (initialized == false, "Already Initialized");
-       
-        staketoken = _stakingtoken;
-        nftredeem = _nftredeemaddress;
-        stakingamount = _stakingamount;
-        initialized = true;
+    function withdrawETH(uint256 amount) external onlyOwner {
+        // This forwards all available gas. Be sure to check the return value!
+        (bool success, ) = msg.sender.call{value: amount}("");
+        require(success, "Transfer failed.");
     }
 
-    function onERC721Received(address, address, uint, bytes calldata) public  override returns (bytes4) {
-        return 0x150b7a02;
+    function withdrawNotSoldTokens() external onlyOwner {
+        require(block.timestamp > finishTimestamp, "Withdraw allowed after stop accept ETH");
+        uint256 balance = rewardToken.balanceOf(address(this));
+        rewardToken.safeTransfer(msg.sender, balance.add(distributedTokens).sub(tokensForDistribution));
     }
-    
+
+    function extendICOTime(uint _sec) external onlyOwner {
+        finishTimestamp += _sec;
+    }
+
+    function emergencyWithdraw(ERC20 _address, uint _amnt) external onlyOwner {
+        ERC20(_address).transfer(msg.sender, _amnt);
+    }
+
+    function totalUsers() external view returns(uint _users)
+      {
+    return users.length;
+     }
+
+    function addWhitelistedUser(address[] calldata _users) external onlyOwner {
+        
+        for (uint i =0; i < _users.length; i++) {
+            whitelistedUsers.push(_users[i]);
+            isWhitelistedUser[_users[i]] = true;   
+        }
+    } 
+
 }
